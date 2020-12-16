@@ -4,10 +4,12 @@ This script will pull the latest PDF reports from Veracode for recent Static and
 <b>Usage:</b>
 
 Summary Report
-python getreports.py
+
+<code>python getreports.py</code>
 
 Detailed Report
-python getreports.py --detailed
+
+<code>python getreports.py --detailed</code>
 
 <b>Prerequisits:</b>
 
