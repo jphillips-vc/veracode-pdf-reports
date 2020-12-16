@@ -1,0 +1,7 @@
+###### Requirements without Version Specifiers ######`
+os
+sys
+xmltodict
+datetime
+timedelta
+argparse
