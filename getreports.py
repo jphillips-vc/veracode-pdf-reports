@@ -8,12 +8,22 @@ from datetime import timedelta
 #
 # GLOBAL VARIABLES
 # 
-JavaWrapperVersion="20.8.7.1"
+# configurable
+JavaWrapperVersion="20.8.7.1" # capture latest version https://search.maven.org/search?q=a:vosp-api-wrappers-java 
+ReportRange=1 # how many days to look back for new scan reports
+custompath = False # True/False should we use a custom path to save files
+filepath = "veracode_pdf_reports/" # Change the path as necessary
+#
+# do not adjust
+builds_dict={}
 now = datetime.datetime.now()
 today = date.today()  
-yesterday = today - timedelta(days = 1) 
+yesterday = today - timedelta(days = int(ReportRange)) 
 reportfrom = str(yesterday.month)+'/'+str(yesterday.day)+'/'+str(yesterday.year)
-builds_dict={}
+if custompath is True:
+	cuspath=str(filepath)
+else:
+	cuspath=""
 #
 # CLI Parser //  --summary flag will create summary pdf reports
 #
@@ -35,10 +45,6 @@ def getData():
 	#
 	# GET DATA
 	os.system('java -jar VeracodeJavaAPI.jar -action getappbuilds -reportchangedsince '+str(reportfrom)+' > recent_veracode_builds.xml')
-	#os.system('java -jar VeracodeJavaAPI.jar -action getappbuilds -reportchangedsince 01/01/2020 > recent_veracode_builds.xml')
-	#
-	# CREATE REPORT DIRECTORY
-	os.system('mkdir veracode_pdf_reports')	
 	#
 	# Importing XML data and convert to JSON
 	#
@@ -103,11 +109,11 @@ def createReports():
 			if reporttype is True:
 				file_name = str(builds_dict[k]['app_name'].lower().replace('.', '-').replace('_', '-').replace(' ', '').replace('.html', '').replace('http://', '').replace('https://', '').replace('/', ''))+'_'+str(builds_dict[k]['analysis_type'].lower())+'_Report.pdf'
 				print(bid, file_name)
-				os.system('java -jar VeracodeJavaAPI.jar -action summaryreport -buildid '+ str(bid) +' -format pdf -outputfilepath veracode_pdf_reports/'+ str(file_name))
+				os.system('java -jar VeracodeJavaAPI.jar -action summaryreport -buildid '+ str(bid) +' -format pdf -outputfilepath '+ str(cuspath) + str(file_name))
 			else:
 				file_name = str(builds_dict[k]['app_name'].lower().replace('.', '-').replace('_', '-').replace(' ', '').replace('.html', '').replace('http://', '').replace('https://', '').replace('/', ''))+'_'+str(builds_dict[k]['analysis_type'].lower())+'_DetailedReport.pdf'
 				print(bid, file_name)
-				os.system('java -jar VeracodeJavaAPI.jar -action detailedreport -buildid '+ str(bid) +' -format pdf -outputfilepath veracode_pdf_reports/'+ str(file_name))	
+				os.system('java -jar VeracodeJavaAPI.jar -action detailedreport -buildid '+ str(bid) +' -format pdf -outputfilepath '+ str(cuspath) + str(file_name))	
 		cleanup()
 	except:
 		print(sys.exc_info())
