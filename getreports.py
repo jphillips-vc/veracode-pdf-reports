@@ -124,9 +124,15 @@ def createReports():
 #
 def cleanup():
 	try:
-		os.system('rm VeracodeJavaAPI.jar')
-		os.system('rm recent_veracode_builds.xml')
-		os.system('rm recent_veracode_builds.json')
+		name = os.name
+		if (name == 'nt'):
+			os.system('del /q VeracodeJavaAPI.jar')
+			os.system('del /q recent_veracode_builds.xml')
+			os.system('del /q recent_veracode_builds.json')
+		else:
+			os.system('rm VeracodeJavaAPI.jar')
+			os.system('rm recent_veracode_builds.xml')
+			os.system('rm recent_veracode_builds.json')
 	except:
 		sys.exit("Error cleaning up temp files")
 
